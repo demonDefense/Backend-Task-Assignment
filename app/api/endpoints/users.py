@@ -14,27 +14,25 @@ def get_db():
         yield db
     finally:
         db.close()
-
-def get_current_user(token: str, db: Session = Depends(get_db)) -> User:
+        
+def get_current_user(token: str, db: Session) -> User:
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        print("Decoded payload:", payload)
         username = payload.get("sub")
         roles = payload.get("roles", [])
         if username is None:
-            raise credentials_exception
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Please Login First", headers={"WWW-Authenticate": "Bearer"})
     except jwt.PyJWTError as e:
-        print("JWT decode error:", e)
-        raise credentials_exception
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Please Login First", headers={"WWW-Authenticate": "Bearer"})
 
     user = get_user_by_username(db, username)
     if user is None:
-        raise credentials_exception
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Please Login First", headers={"WWW-Authenticate": "Bearer"})
 
     user.token_roles = roles
     return user
 
-def Isadmin(token: str, db: Session = Depends(get_db)):
+def Isadmin(token: str, db: Session):
     current_user=get_current_user(token, db)
     if "admin" not in current_user.token_roles:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin access required")

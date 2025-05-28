@@ -9,20 +9,22 @@ This project is a back-end API for an e-commerce admin dashboard. It is develope
 - [x] Database schema defined and created using SQLAlchemy.
 - [x] MySQL connection using environment variables (`.env`).
 - [ ] API endpoints for:
-  - [ ] Sales status & revenue analytics
-  - [ ] Inventory management
+  - [x] Users CRUD
   - [x] Product CRUD
   - [x] Category CRUD
-  - [ ] Users CRUD
+  - [x] Sales status & revenue analytics
+  - [ ] Inventory management
 - [ ] Dummy data script
+  - [ ] Users
   - [x] Products 
   - [x] Categories
-  - [ ] Sales
+  - [x] Sales
   - [ ] Inventory
 - [ ] Unit tests
+  - [x] Users
   - [x] Products
   - [x] Categories
-  - [ ] Sales
+  - [x] Sales
   - [ ] Inventory
 - [ ] API documentation
 

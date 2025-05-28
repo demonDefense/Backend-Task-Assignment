@@ -90,12 +90,36 @@ class SaleBase(BaseModel):
     total_amount: float
 
 class SaleCreate(SaleBase):
-    pass
+    token: str
 
 class Sale(SaleBase):
     id: int
     created_at: datetime
     product: Product
+
+    class Config:
+        orm_mode = True
+        
+class RevenueByPeriod(BaseModel):
+    period: str
+    revenue: float
+
+    class Config:
+        orm_mode = True
+        
+class RevenueByCategory(BaseModel):
+    category: str
+    units_sold: int
+    revenue: float
+
+    class Config:
+        orm_mode = True
+        
+class RevenueByProduct(BaseModel):
+    product: str
+    category: str
+    units_sold: int
+    revenue: float
 
     class Config:
         orm_mode = True

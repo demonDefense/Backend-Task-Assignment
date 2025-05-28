@@ -10,6 +10,6 @@ app = FastAPI(title="E-commerce Admin API")
 app.include_router(users.router)
 app.include_router(category.router)
 app.include_router(products.router)
-#app.include_router(sales.router)
+app.include_router(sales.router)
 #app.include_router(inventory.router)
 
