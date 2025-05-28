@@ -4,6 +4,10 @@ from typing import List, Optional, ForwardRef
 
 # --- User & Role ---
 
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
 class RoleBase(BaseModel):
     name: str
     description: Optional[str]
@@ -23,12 +27,21 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str
+    token: str
 
 class User(UserBase):
     id: int
     created_at: datetime
     last_login: Optional[datetime]
     roles: List[Role] = []
+
+    class Config:
+        orm_mode = True
+        
+class UserRoleBase(BaseModel):
+    user_id: int
+    role_id: int
+    assigned_at: datetime
 
     class Config:
         orm_mode = True

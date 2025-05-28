@@ -1,2 +1,2 @@
-pip install fastapi uvicorn sqlalchemy mysql-connector-python alembic pydantic python-dotenv email-validator
+pip install fastapi uvicorn sqlalchemy mysql-connector-python alembic pydantic python-dotenv email-validator passlib[bcrypt] PyJWT python-multipart
 
