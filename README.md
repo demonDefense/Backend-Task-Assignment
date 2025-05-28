@@ -11,9 +11,13 @@ This project is a back-end API for an e-commerce admin dashboard. It is develope
 - [ ] API endpoints for:
   - Sales status & revenue analytics
   - Inventory management
-  - Product registration
+  - [x] Product registration and retrieval
 - [ ] Dummy data script
+  - [x] Products & Categories
+  - [ ] Sales
+  - [ ] Inventory
 - [ ] Unit tests
+  - [x] Products
 - [ ] API documentation
 
 ---
