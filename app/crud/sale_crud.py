@@ -9,6 +9,10 @@ def get_sale(db: Session, sale_id: int) -> Sale:
     return db.query(Sale).filter(Sale.id == sale_id).first()
 
 def list_sales(db: Session) -> List[Tuple[str, str, int, float]]:
+    """
+    Returns list of (Product, Category, items_sold, total_revenue).
+    Calculate total revenue for all Products
+    """
     return (
         db.query(
             Product.name.label("product_name"),
@@ -18,9 +22,7 @@ def list_sales(db: Session) -> List[Tuple[str, str, int, float]]:
         )
         .join(Product, Sale.product_id == Product.id)
         .join(Category, Product.category_id == Category.id)
-        group_by(
-            Product.id, Product.name
-        )
+        .group_by(Product.id, Product.name)
         .order_by(Product.name)
         .all()
     )
@@ -97,7 +99,7 @@ def get_sales_by_date_range(db: Session, start_date: date, end_date: date) -> Li
 
 def get_sales_by_product(db: Session, start_date: date, end_date: date, product_id: int) -> List[Tuple[str, str, int, float]]:
     """
-    Returns list of (Product Category, items_sold, total_revenue).
+    Returns list of (Product, Category, items_sold, total_revenue).
     Calculate total revenue between interval and for specific Product
     """
     return (
