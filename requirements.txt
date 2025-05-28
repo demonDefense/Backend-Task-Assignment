@@ -1,1 +1,2 @@
-pip install fastapi uvicorn sqlalchemy mysql-connector-python alembic pydantic python-dotenv
+pip install fastapi uvicorn sqlalchemy mysql-connector-python alembic pydantic python-dotenv email-validator
+
