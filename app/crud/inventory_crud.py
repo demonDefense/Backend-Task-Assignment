@@ -1,45 +1,59 @@
 from sqlalchemy.orm import Session
 from datetime import datetime
-from typing import List, Optional, Tuple
+from typing import List, Tuple, Optional
+from app.models.models import Inventory, InventoryHistory
+from app.schemas.schemas import InventoryCreate, InventoryHistoryCreate
 
-from app.models.models import (
-    Category, Product
-)
-from app.schemas.schemas import (
-    CategoryCreate, ProductCreate
-)
+def get_inventory(db: Session, product_id: int) -> Optional[Inventory]:
+    return db.query(Inventory).filter(Inventory.product_id == product_id).first()
 
 
-# --- Category & Product CRUD ---
+def list_inventory(db: Session) -> List[Inventory]:
+    return db.query(Inventory).all()
 
-def get_category(db: Session, category_id: int) -> Optional[Category]:
-    return db.query(Category).filter(Category.id == category_id).first()
 
-def create_category(db: Session, cat_in: CategoryCreate) -> Category:
-    db_cat = Category(**cat_in.dict())
-    db.add(db_cat)
+def list_low_stock(db: Session) -> List[Inventory]:
+    return db.query(Inventory).filter(Inventory.quantity_on_hand <= Inventory.low_stock_threshold).all()
+
+
+def create_inventory(db: Session, inv_in: InventoryCreate) -> Inventory:
+    inv = Inventory(
+        product_id=inv_in.product_id,
+        quantity_on_hand=inv_in.quantity_on_hand,
+        low_stock_threshold=inv_in.low_stock_threshold,
+        last_updated=datetime.utcnow()
+    )
+    db.add(inv)
     db.commit()
-    db.refresh(db_cat)
-    return db_cat
+    db.refresh(inv)
+    return inv
 
-def list_categories(db: Session) -> List[Category]:
-    return db.query(Category).all()
 
-def get_product(db: Session, product_id: int) -> Optional[Product]:
-    return db.query(Product).filter(Product.id == product_id).first()
-    
-def get_product_by_category(db: Session, category_id: int) -> List[Product]:
-    return db.query(Product).filter(Product.category_id == category_id).all()
-
-def create_product(db: Session, prod_in: ProductCreate) -> Product:
-    db_prod = Product(**prod_in.dict())
-    db.add(db_prod)
+def update_inventory(db: Session, product_id: int, change_qty: int, reason: str) -> Tuple[Optional[Inventory], Optional[InventoryHistory]]:
+    inv = get_inventory(db, product_id)
+    inv.quantity_on_hand += change_qty
+    inv.last_updated = datetime.utcnow()
+    hist = InventoryHistory(
+        product_id=product_id,
+        change_qty=change_qty,
+        reason=reason,
+        changed_at=datetime.utcnow()
+    )
+    db.add(inv)
+    db.add(hist)
     db.commit()
-    db.refresh(db_prod)
-    return db_prod
+    db.refresh(inv)
+    db.refresh(hist)
+    return inv, hist
 
+def delete_inventory(db: Session, product_id: int) -> bool:
+    inv = get_inventory(db, product_id)
+    db.delete(inv)
+    db.commit()
+    return True
 
-def list_products(db: Session, skip: int = 0, limit: int = 100) -> List[Product]:
-    return db.query(Product).offset(skip).limit(limit).all()
+def list_inventory_history(db: Session) -> List[InventoryHistory]:
+    return db.query(InventoryHistory).order_by(InventoryHistory.changed_at.desc()).all()
 
-
+def get_inventory_history(db: Session, product_id: int) -> List[InventoryHistory]:
+    return db.query(InventoryHistory).filter(Inventory.product_id == product_id).order_by(InventoryHistory.changed_at.desc()).all()
