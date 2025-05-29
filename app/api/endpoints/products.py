@@ -31,10 +31,7 @@ def create_new_product(product_in: ProductCreate, db: Session = Depends(get_db))
     # If Category exist then add product
     category = get_category(db, product_in.category_id)
     if not category:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Category not found"
-        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Category not found")
     return create_product(db, product_in)
 
 @router.get("/", response_model=List[ProductSchema])
@@ -45,10 +42,7 @@ def read_products(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)
 def read_product(product_id: int, db: Session = Depends(get_db)):
     prod = get_product(db, product_id)
     if not prod:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Product not found"
-        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
     return prod
 
 @router.get("/category/{category_id}", response_model=List[ProductSchema])
@@ -60,10 +54,7 @@ def update_existing_product(product_id: int, product_in: ProductCreate, db: Sess
     # If Category exist then update product
     category = get_category(db, product_in.category_id)
     if not category:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Category not found"
-        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Category not found")
     updated = update_product(db, product_id, product_in)
     if not updated:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")

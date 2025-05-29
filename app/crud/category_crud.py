@@ -2,12 +2,8 @@ from sqlalchemy.orm import Session
 from datetime import datetime
 from typing import List, Optional, Tuple
 
-from app.models.models import (
-    Category
-)
-from app.schemas.schemas import (
-    CategoryCreate
-)
+from app.models.models import Category
+from app.schemas.schemas import CategoryCreate
 
 def create_category(db: Session, cat_in: CategoryCreate) -> Category:
     db_cat = Category(**cat_in.dict())

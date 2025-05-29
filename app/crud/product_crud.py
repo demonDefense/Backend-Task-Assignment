@@ -2,12 +2,9 @@ from sqlalchemy.orm import Session
 from datetime import datetime
 from typing import List, Optional, Tuple
 
-from app.models.models import (
-    Product
-)
-from app.schemas.schemas import (
-    ProductCreate
-)
+from app.models.models import Product
+from app.schemas.schemas import ProductCreate
+
 def create_product(db: Session, prod_in: ProductCreate) -> Product:
     db_prod = Product(**prod_in.dict())
     db.add(db_prod)

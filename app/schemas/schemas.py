@@ -125,7 +125,7 @@ class RevenueByProduct(BaseModel):
         orm_mode = True
 
 
-# --- Inventory ---
+# --- Inventory & History ---
 
 class InventoryBase(BaseModel):
     product_id: int
